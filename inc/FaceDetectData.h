@@ -26,6 +26,11 @@ typedef struct{
     u8 subCmd;     //从命令字
 }__attribute__ ((packed)) dataHead_S;
 
+#ifdef QT_NO_DEBUG
+#define DEMO_Print()
+#define DEMO_Printf(format, ...)
+#define DEMO_DPrintf(buf,len,format,...)
+#else
 #define DEMO_Print()\
     {\
         {\
@@ -57,7 +62,7 @@ typedef struct{
     printf("\n");\
     DEMO_Printf("   \\---------------------------------[ length %3d",len);\
 }
-
+#endif
 class FaceDetectData
 {
 public:

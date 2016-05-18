@@ -20,6 +20,21 @@
   </property>
   <widget class="QWidget" name="WidgetCentral">
    <layout class="QVBoxLayout" name="verticalLayout_2">
+    <property name="spacing">
+     <number>0</number>
+    </property>
+    <property name="leftMargin">
+     <number>5</number>
+    </property>
+    <property name="topMargin">
+     <number>0</number>
+    </property>
+    <property name="rightMargin">
+     <number>5</number>
+    </property>
+    <property name="bottomMargin">
+     <number>0</number>
+    </property>
     <item>
      <widget class="QWidget" name="WidgetTop" native="true">
       <property name="minimumSize">
@@ -36,7 +51,7 @@
       </property>
       <layout class="QHBoxLayout" name="horizontalLayout_2">
        <property name="spacing">
-        <number>10</number>
+        <number>5</number>
        </property>
        <property name="leftMargin">
         <number>0</number>
@@ -48,7 +63,7 @@
         <number>0</number>
        </property>
        <property name="bottomMargin">
-        <number>5</number>
+        <number>0</number>
        </property>
        <item>
         <widget class="QGroupBox" name="GBoxComSet">
@@ -203,7 +218,10 @@
     </item>
     <item>
      <widget class="QWidget" name="WidgetDown" native="true">
-      <layout class="QHBoxLayout" name="horizontalLayout_7">
+      <layout class="QHBoxLayout" name="horizontalLayout_4">
+       <property name="spacing">
+        <number>5</number>
+       </property>
        <property name="leftMargin">
         <number>0</number>
        </property>
@@ -219,22 +237,26 @@
        <item>
         <widget class="QGroupBox" name="GGBoxLeft">
          <property name="title">
-          <string>发送</string>
+          <string/>
          </property>
-         <layout class="QGridLayout" name="gridLayout">
+         <layout class="QGridLayout" name="_2">
+          <property name="topMargin">
+           <number>0</number>
+          </property>
           <item row="4" column="0">
            <widget class="QTextBrowser" name="TBrowserTx"/>
           </item>
           <item row="0" column="0">
            <layout class="QHBoxLayout" name="horizontalLayout_3">
-            <property name="spacing">
-             <number>10</number>
-            </property>
-            <property name="margin">
-             <number>0</number>
-            </property>
             <item>
-             <widget class="QComboBox" name="CBoxCmd"/>
+             <widget class="QComboBox" name="CBoxCmd">
+              <property name="sizePolicy">
+               <sizepolicy hsizetype="Minimum" vsizetype="Fixed">
+                <horstretch>0</horstretch>
+                <verstretch>0</verstretch>
+               </sizepolicy>
+              </property>
+             </widget>
             </item>
             <item>
              <widget class="QPushButton" name="PButtonSend">
@@ -257,9 +279,12 @@
        <item>
         <widget class="QGroupBox" name="GGBoxRight">
          <property name="title">
-          <string>接收</string>
+          <string/>
          </property>
-         <layout class="QGridLayout" name="gridLayout_2">
+         <layout class="QGridLayout" name="_3">
+          <property name="topMargin">
+           <number>0</number>
+          </property>
           <item row="0" column="0">
            <widget class="QTextBrowser" name="TBrowserRx"/>
           </item>

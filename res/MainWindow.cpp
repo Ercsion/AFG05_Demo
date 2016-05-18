@@ -58,7 +58,12 @@ void MainWindow::Init()
 
     toDev = new FaceDetectData();
 
+
+#ifdef QT_NO_DEBUG
+    ChangeEnable(false);
+#else
     ChangeEnable(true);
+#endif
 
 }
 
@@ -68,8 +73,6 @@ void MainWindow::ChangeEnable(bool b)
 
     ui->CBoxCmd->setEnabled(b);
     ui->PButtonSend->setEnabled(b);
-    ui->PButtonTxClean->setEnabled(b);
-    ui->PButtonRxClean->setEnabled(b);
     ui->TBrowserTx->setEnabled(b);
     ui->TBrowserRx->setEnabled(b);
 }
@@ -104,6 +107,10 @@ void MainWindow::on_PButtonOpen_clicked()
             ui->PButtonOpen->setText("关闭");
             this->myReadTimer->start();
         }
+        else
+        {
+            myHelper::ShowMessageBoxErrorX("Failed to open serial port!");
+        }
     }
     else
     {
@@ -117,12 +124,24 @@ void MainWindow::on_PButtonOpen_clicked()
 
 void MainWindow::on_PButtonSend_clicked()
 {
-    ui->TBrowserTx->append(ui->CBoxCmd->currentText());
     this->WriteMyCom();
-
 }
 
+void MainWindow::on_PButtonRxClean_clicked()
+{
+    SendCount = 0;
+    SendByteCount = 0;
+    ui->LabelTxInfo->setText(QString("发送:%1 包，%2 字节").arg(SendCount).arg(SendByteCount));
+    ui->TBrowserTx->clear();
+}
 
+void MainWindow::on_PButtonTxClean_clicked()
+{
+    ReadCount = 0;
+    ReadByteCount = 0;
+    ui->LabelRxInfo->setText(QString("接收:%1 包，%2 字节").arg(ReadCount).arg(ReadByteCount));
+    ui->TBrowserRx->clear();
+}
 
 void MainWindow::ReadMyCom()
 {
@@ -144,22 +163,36 @@ void MainWindow::ReadMyCom()
 
 void MainWindow::WriteMyCom()
 {
+#ifdef QT_NO_DEBUG
     if (!myCom->isOpen())
     {
-        myHelper::ShowMessageBoxInfo("Please open your serial port first.");
+        myHelper::ShowMessageBoxErrorX("Please open your serial port first.");
         return;
     }
+#endif
+
 
     QString str = ui->CBoxCmd->currentText();
     cmdList cmd = (cmdList)(str.split("|").at(0).toInt(0,16));
 
     toDev->setUp(cmd);
+    if(0 >= toDev->getDataLen()){return;}
+
+    int ret = myCom->write(*(toDev->getData()));
+
+#ifdef QT_NO_DEBUG
+    if(0 >= ret)
+    {
+        myHelper::ShowMessageBoxErrorX("Failed to write serial port!");
+        return;
+    }
+#endif
+    ///-- 显示发送数据信息
+    ui->TBrowserTx->append(QString("[%1]").arg(QTime::currentTime().toString("HH:mm:ss")));
+    ui->TBrowserTx->append(QString("%1").arg(str));
+    ui->TBrowserTx->append(QString("%1").arg(myHelper::ByteArrayToHexStr(*(toDev->getData()))));
 
     SendCount++;
-    SendByteCount+=myCom->write(*(toDev->getData()));
-    ui->TBrowserTx->append(QString("[%1] %2")
-                           .arg(QTime::currentTime().toString("HH:mm:ss"))
-                           .arg((char*)toDev->getData()->toHex().data()));
+    SendByteCount+=ret;
     ui->LabelTxInfo->setText(QString("发送:%1 包，%2 字节").arg(SendCount).arg(SendByteCount));
-
 }

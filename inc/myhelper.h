@@ -30,7 +30,7 @@ public:
     static void SetStyle()
     {
         QApplication::setStyle(QStyleFactory::create("Plastique"));
-        //QApplication::setPalette(QApplication::style()->standardPalette());//替换应用程序的颜色组合
+        QApplication::setPalette(QApplication::style()->standardPalette());//替换应用程序的颜色组合
     }
 
     //设置编码为GB2312
@@ -72,7 +72,7 @@ public:
     static void ShowMessageBoxError(QString info)
     {
         QMessageBox msg;
-        msg.setStyleSheet("font:12pt '宋体'");
+        msg.setStyleSheet("font:12pt '黑体'");
         msg.setWindowTitle("错误");
         msg.setText(info);
         msg.setIcon(QMessageBox::Critical);
@@ -108,7 +108,7 @@ public:
     static QString ShowInputBox(QWidget *frm,QString info)
     {
         bool ok;
-        return QInputDialog::getText(frm,"提示",info,QLineEdit::Password,"",&ok);
+        return QInputDialog::getText(frm,"提示",info,QLineEdit::Normal,"",&ok);
     }
 
     //16进制字符串转字节数组

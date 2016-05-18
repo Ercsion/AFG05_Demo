@@ -31,6 +31,10 @@ private slots:
     void ReadMyCom();//读取串口数据
     void WriteMyCom();//写串口数据
 
+    void on_PButtonRxClean_clicked();
+
+    void on_PButtonTxClean_clicked();
+
 private:
     Ui::MainWindow *ui;
 

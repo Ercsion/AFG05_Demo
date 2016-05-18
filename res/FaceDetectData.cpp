@@ -20,6 +20,7 @@ void FaceDetectData::setUp(cmdList cmd)
     u8* buff = (u8*)dataArr_m->data();
     dataLen_m = 0;
     u16 len = setUpData(cmd,buff+sizeof(dataHead_S));
+    if(0 >= len) return;
 
     dataHead_S* p_dataHead = (dataHead_S*)buff;
     memset(p_dataHead->head,0x23,2);
@@ -50,6 +51,7 @@ u16 FaceDetectData::setUpData(cmdList cmd,u8* buf)
 {
     switch(cmd)
     {
+    /// 握手
     case C0x01:
     {
         QDateTime date = QDateTime::currentDateTime();
@@ -58,12 +60,45 @@ u16 FaceDetectData::setUpData(cmdList cmd,u8* buf)
         memcpy(buf,outData,outData.size());
         return outData.size();
     }
+    /// 查询人员ID
     case C0x02:
+    /// 删除人员ID
+    case C0x04:
     {
-        QDateTime date = QDateTime::currentDateTime();
-        QString str = date.toString("12345678");
+        int userID = myHelper::ShowInputBox(0,"Please input a user ID").toInt();
+        if(0 >= userID){ return 0;}
+
+        QString str = QString("%1").arg(userID,8,10,QLatin1Char('0'));
         QByteArray outData = str.toAscii();
         memcpy(buf,outData,outData.size());
+        return outData.size();
+    }
+    /// 下载特征文件
+    case C0x03:
+    {
+        myHelper::ShowMessageBoxInfoX("Unused for now ...");
+        //先选择上传的文件
+        int userID = myHelper::ShowInputBox(0,"Please input a user ID").toInt();
+        if(0 >= userID){ return 0;}
+
+        QString filePath = myHelper::GetFileName("*.dat");
+        if(""==filePath){return 0;}
+        return 0;
+        QString str = QString("%1").arg(userID,8,10,QLatin1Char('0'));
+        QByteArray outData = str.toAscii();
+        memcpy(buf,outData,outData.size());
+        return outData.size();
+    }
+    /// 开始对比操作
+    case C0x05:
+    {
+        int userID = myHelper::ShowInputBox(0,"Please input a user ID").toInt();
+        if(0 >= userID){ return 0;}
+
+        QString str = QString("%1").arg(userID,8,10,QLatin1Char('0'));
+        QByteArray outData = str.toAscii();
+        memcpy(buf,outData,outData.size());
+        *(buf+outData.size()) = 0x01;
         return outData.size();
     }
     }
