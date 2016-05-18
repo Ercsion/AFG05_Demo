@@ -28,7 +28,6 @@ private:
 private slots:
     void on_PButtonOpen_clicked();
     void on_PButtonSend_clicked();
-    void on_CBoxCmd_currentIndexChanged(const QString &arg1);
     void ReadMyCom();//读取串口数据
     void WriteMyCom();//写串口数据
 

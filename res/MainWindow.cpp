@@ -65,7 +65,6 @@ void MainWindow::Init()
 void MainWindow::ChangeEnable(bool b)
 {
     ui->CBoxPort->setEnabled(!b);
-    ui->PButtonOpen->setEnabled(!b);
 
     ui->CBoxCmd->setEnabled(b);
     ui->PButtonSend->setEnabled(b);
@@ -118,14 +117,11 @@ void MainWindow::on_PButtonOpen_clicked()
 
 void MainWindow::on_PButtonSend_clicked()
 {
+    ui->TBrowserTx->append(ui->CBoxCmd->currentText());
     this->WriteMyCom();
 
 }
 
-void MainWindow::on_CBoxCmd_currentIndexChanged(const QString &arg1)
-{
-    ui->TBrowserTx->append(arg1);
-}
 
 
 void MainWindow::ReadMyCom()
@@ -137,9 +133,9 @@ void MainWindow::ReadMyCom()
     QByteArray buffer=myCom->readAll();
 
     QString tempDataHex=myHelper::ByteArrayToHexStr(buffer);
-    ui->TBrowserRx->append(QString("接收:%1 时间:%2")
-                           .arg(tempDataHex)
-                           .arg(QTime::currentTime().toString("HH:mm:ss")));
+    ui->TBrowserRx->append(QString("[%1] %2")
+                           .arg(QTime::currentTime().toString("HH:mm:ss"))
+                           .arg(tempDataHex));
 
     ReadCount++;
     ReadByteCount+=buffer.size();
@@ -148,14 +144,22 @@ void MainWindow::ReadMyCom()
 
 void MainWindow::WriteMyCom()
 {
-    //if (!myCom->isOpen()) { return; }//串口没有打开
+    if (!myCom->isOpen())
+    {
+        myHelper::ShowMessageBoxInfo("Please open your serial port first.");
+        return;
+    }
 
     QString str = ui->CBoxCmd->currentText();
     cmdList cmd = (cmdList)(str.split("|").at(0).toInt(0,16));
 
     toDev->setUp(cmd);
 
-    //myCom->write((char*)toDev->getData());
-    ui->TBrowserTx->append((char*)toDev->getData()->toHex().data());
+    SendCount++;
+    SendByteCount+=myCom->write(*(toDev->getData()));
+    ui->TBrowserTx->append(QString("[%1] %2")
+                           .arg(QTime::currentTime().toString("HH:mm:ss"))
+                           .arg((char*)toDev->getData()->toHex().data()));
+    ui->LabelTxInfo->setText(QString("发送:%1 包，%2 字节").arg(SendCount).arg(SendByteCount));
 
 }
